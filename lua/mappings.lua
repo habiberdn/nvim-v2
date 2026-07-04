@@ -18,3 +18,8 @@ end, { desc = "Move tab left" })
 -- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
 map("i", "<C-H>", "<C-w>", { desc = "Hapus satu kata ke belakang" })
 map("i", "<C-Bs>", "<C-w>", { desc = "Hapus satu kata ke belakang" })
+
+map("n", "<C-h>", "<cmd>TmuxNavigateLeft<cr>", { desc = "Window/Pane Left" })
+map("n", "<C-j>", "<cmd>TmuxNavigateDown<cr>", { desc = "Window/Pane Down" })
+map("n", "<C-k>", "<cmd>TmuxNavigateUp<cr>", { desc = "Window/Pane Up" })
+map("n", "<C-l>", "<cmd>TmuxNavigateRight<cr>", { desc = "Window/Pane Right" })

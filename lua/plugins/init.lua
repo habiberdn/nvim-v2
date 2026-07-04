@@ -168,7 +168,28 @@ return {
     end,
   },
   {
-    'nvim-telescope/telescope-fzf-native.nvim',
-    build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release --target install'
+    "nvim-telescope/telescope.nvim",
+    opts = function(_, opts)
+      -- Gunakan tbl_deep_extend agar base46 dan config asli NvChad TIDAK HILANG
+      return vim.tbl_deep_extend("force", opts, {
+        defaults = {
+          file_ignore_patterns = {
+            "node_modules/",
+            "%.git/",
+            "dist/",
+            "build/",
+            "target/"
+          },
+          preview = {
+            filesize_limit = 0.1, -- Matikan preview jika file > 100 KB
+            timeout = 250,        -- Batasi loading previewer max 250ms
+          },
+        },
+      })
+    end,
+  },
+  {
+    "christoomey/vim-tmux-navigator",
+    lazy = false, -- Harus langsung aktif saat Neovim dibuka
   },
 }
