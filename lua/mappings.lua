@@ -24,13 +24,22 @@ map("n", "<C-j>", "<cmd>TmuxNavigateDown<cr>", { desc = "Window/Pane Down" })
 map("n", "<C-k>", "<cmd>TmuxNavigateUp<cr>", { desc = "Window/Pane Up" })
 map("n", "<C-l>", "<cmd>TmuxNavigateRight<cr>", { desc = "Window/Pane Right" })
 
-map("n", "<C-Up>", "v<Up>", { desc = "Block Up" })
-map("n", "<C-Down>", "v<Down>", { desc = "Block Down" })
-map("n", "<C-Left>", "v<Left>", { desc = "Block Left" })
-map("n", "<C-Right>", "v<Right>", { desc = "Block Right" })
+map("n", "<A-S-Left>", "vb", { desc = "Block Word Left" })
+map("n", "<A-S-Right>", "vw", { desc = "Block Word Right" })
 
--- Meneruskan seleksi saat sudah di dalam Visual Mode
-map("v", "<C-Up>", "<Up>", { desc = "Extend Block Up" })
-map("v", "<C-Down>", "<Down>", { desc = "Extend Block Down" })
-map("v", "<C-Left>", "<Left>", { desc = "Extend Block Left" })
-map("v", "<C-Right>", "<Right>", { desc = "Extend Block Right" })
+-- Dari Visual Mode: Teruskan expand seleksi per satu kata
+map("v", "<A-S-Left>", "b", { desc = "Extend Block Word Left" })
+map("v", "<A-S-Right>", "w", { desc = "Extend Block Word Right" })
+
+map("v", "p", '"_dP', { desc = "Paste tanpa menimpa clipboard" })
+map("n", "<leader>bx", function()
+  local current_buf = vim.api.nvim_get_current_buf()
+  local bufs = vim.api.nvim_list_bufs()
+
+  for _, buf in ipairs(bufs) do
+    -- Hanya hapus buffer yang tidak aktif, valid, dan terdaftar di tabline
+    if buf ~= current_buf and vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buflisted then
+      vim.api.nvim_buf_delete(buf, { force = false })
+    end
+  end
+end, { desc = "Close all other buffers (tabs)" })
