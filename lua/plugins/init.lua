@@ -35,7 +35,8 @@ return {
     opts = {
       ensure_installed = {
         "vim", "lua", "vimdoc",
-        "html", "css", 'dart'
+        "html", "css", "javascript", "typescript", "tsx",
+        "php", "blade", 'dart', 'python', -- Catatan: Typo 'phyton' sudah diperbaiki ke 'python'
       },
     },
   },
@@ -80,23 +81,21 @@ return {
     keys = { "<C-u>", "<C-d>", "<C-b>", "<C-f>", "zt", "zz", "zb" },
     config = function()
       require("neoscroll").setup({
-        -- Anda bisa membiarkannya kosong untuk pengaturan default yang sudah smooth
         mappings = { '<C-u>', '<C-d>', '<C-b>', '<C-f>', 'zt', 'zz', 'zb' },
-        hide_cursor = true,          -- Sembunyikan kursor saat animasi berjalan
-        stop_eof = true,             -- Berhenti jika sudah mentok di akhir file
-        respect_scrolloff = false,   -- Jalankan animasi tanpa terganggu batas scrolloff
-        cursor_scrolls_alone = true, -- Kursor tetap ikut bergerak meskipun layar tidak bisa scroll
-        easing = "linear",           -- Jenis animasi: "linear", "sine", "circular", dll.
+        hide_cursor = true,
+        stop_eof = true,
+        respect_scrolloff = false,
+        cursor_scrolls_alone = true,
+        easing = "linear",
       })
     end,
   },
   {
     "sphamba/smear-cursor.nvim",
-    event = "VeryLazy", -- Dimuat di latar belakang setelah Neovim terbuka
+    event = "VeryLazy",
     config = function()
       require("smear_cursor").setup({
-        -- Anda bisa mengatur seberapa lentur animasinya di sini
-        stiffness = 0.6, -- Semakin kecil, semakin elastis efek meluncurnya
+        stiffness = 0.6,
         trailing_stiffness = 0.3,
         distance_stop_animating = 0.1,
       })
@@ -110,7 +109,7 @@ return {
     end,
   },
 
-  -- 2. Konfigurasi nvim-cmp (Otak penggabungan tombol TAB)
+  -- 2. Konfigurasi nvim-cmp
   {
     "hrsh7th/nvim-cmp",
     opts = function(_, opts)
@@ -118,7 +117,6 @@ return {
       local neocodeium = require("neocodeium")
 
       opts.mapping = {
-        -- Arrow Down: Navigasi ke bawah di menu Intellisense
         ["<C-Space>"] = cmp.mapping.complete(),
         ["<Down>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
@@ -128,7 +126,6 @@ return {
           end
         end, { "i", "s" }),
 
-        -- Arrow Up: Navigasi ke atas di menu Intellisense
         ["<Up>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
@@ -137,7 +134,6 @@ return {
           end
         end, { "i", "s" }),
 
-        -- Enter (<CR>): Tetap confirm untuk nvim-cmp jika menunya muncul
         ["<CR>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.confirm({ select = true })
@@ -146,21 +142,16 @@ return {
           end
         end, { "i", "s" }),
 
-        -- SUPER TAB: Menangani nvim-cmp, NeoCodeium, dan Indentasi biasa
         ["<Tab>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
-            -- Kondisi A: Jika popup Intellisense muncul, lakukan Confirm
             cmp.confirm({ select = true })
           elseif neocodeium.visible() then
-            -- Kondisi B: Jika ada saran AI ghost-text dari NeoCodeium, lakukan Accept
             neocodeium.accept()
           else
-            -- Kondisi C: Jika tidak ada apa-apa, berfungsi sebagai Tab/Indentasi normal
             fallback()
           end
         end, { "i", "s" }),
 
-        -- Shift + Tab: Kembalikan ke fungsi indentasi biasa
         ["<S-Tab>"] = cmp.mapping(function(fallback)
           fallback()
         end, { "i", "s" }),
@@ -170,7 +161,6 @@ return {
   {
     "nvim-telescope/telescope.nvim",
     opts = function(_, opts)
-      -- Gunakan tbl_deep_extend agar base46 dan config asli NvChad TIDAK HILANG
       return vim.tbl_deep_extend("force", opts, {
         defaults = {
           file_ignore_patterns = {
@@ -181,8 +171,8 @@ return {
             "target/"
           },
           preview = {
-            filesize_limit = 0.1, -- Matikan preview jika file > 100 KB
-            timeout = 250,        -- Batasi loading previewer max 250ms
+            filesize_limit = 0.1,
+            timeout = 250,
           },
         },
       })
@@ -190,6 +180,39 @@ return {
   },
   {
     "christoomey/vim-tmux-navigator",
-    lazy = false, -- Harus langsung aktif saat Neovim dibuka
+    lazy = false,
   },
-}
+
+  {
+    "yetone/avante.nvim",
+    event = "VeryLazy",
+    lazy = false,
+    version = false,
+    opts = {
+      provider = "gemini",
+      -- STRUKTUR BARU: gemini sekarang berada di dalam providers
+      providers = {
+        gemini = {
+          model = "gemini-3.1-pro", -- Memaksa menggunakan versi Pro
+          temperature = 0.1,        -- Nilai rendah membuat jawaban coding lebih akurat & tidak halusinasi
+          max_tokens = 4096,
+        },
+      },
+      behaviour = {
+        auto_suggestions = false, -- Dimatikan agar TIDAK tabrakan dengan NeoCodeium Anda
+      },
+    },
+    build = "make",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "stevearc/dressing.nvim",
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      "nvim-tree/nvim-web-devicons",
+      {
+        'MeanderingProgrammer/render-markdown.nvim',
+        opts = { file_types = { "markdown", "Avante" } },
+        ft = { "markdown", "Avante" },
+      },
+    },
+  }, }
