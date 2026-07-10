@@ -183,36 +183,4 @@ return {
     lazy = false,
   },
 
-  {
-    "yetone/avante.nvim",
-    event = "VeryLazy",
-    lazy = false,
-    version = false,
-    opts = {
-      provider = "gemini",
-      -- STRUKTUR BARU: gemini sekarang berada di dalam providers
-      providers = {
-        gemini = {
-          model = "gemini-3.1-pro", -- Memaksa menggunakan versi Pro
-          temperature = 0.1,        -- Nilai rendah membuat jawaban coding lebih akurat & tidak halusinasi
-          max_tokens = 4096,
-        },
-      },
-      behaviour = {
-        auto_suggestions = false, -- Dimatikan agar TIDAK tabrakan dengan NeoCodeium Anda
-      },
-    },
-    build = "make",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-      "stevearc/dressing.nvim",
-      "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
-      "nvim-tree/nvim-web-devicons",
-      {
-        'MeanderingProgrammer/render-markdown.nvim',
-        opts = { file_types = { "markdown", "Avante" } },
-        ft = { "markdown", "Avante" },
-      },
-    },
-  }, }
+}
