@@ -168,7 +168,7 @@ return {
             "%.git/",
             "dist/",
             "build/",
-            "target/"
+            "target/",
             "vendor/",
             "%.lock",
             "%.bin",
